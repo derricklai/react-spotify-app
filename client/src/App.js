@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
-import { accessToken, getCurrentUserProfile, logout } from "./spotify";
+import { accessToken, getCurrentUserProfile } from "./spotify";
 import { catchErrors } from "./utils";
 import { GlobalStyle } from "./styles";
 import { Login, Profile } from "./pages";
 
-// import {
-//   BrowserRouter as Router,
-//   Routes,
-//   Route,
-//   ScrollRestoration,
-// } from "react-router-dom";
+import { Routes, Route, ScrollRestoration } from "react-router-dom";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -37,17 +32,11 @@ function App() {
       <header className="App-header">
         {!token ? (
           <Login />
-        ) : // <Router>
-        //   <ScrollRestoration />
-
-        //   <Routes>
-        //     <Route path="/">
-        //       <Profile />
-        //     </Route>
-        //   </Routes>
-        // </Router>
-        // )}
-        null}
+        ) : (
+          <Routes>
+            <Route path="/" element={<Profile />}></Route>
+          </Routes>
+        )}
       </header>
     </div>
   );
