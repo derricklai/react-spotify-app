@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { accessToken, getCurrentUserProfile, logout } from "./spotify";
 import { catchErrors } from "./utils";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  ScrollRestoration,
+} from "react-router-dom";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -32,6 +37,8 @@ function App() {
           </a>
         ) : (
           <Router>
+            <ScrollRestoration />
+
             <Routes>
               <Route path="/top-artists" element={<h1>Top Artists</h1>} />
               <Route path="/top-tracks" element={<h1>Top Tracks</h1>} />
