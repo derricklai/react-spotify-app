@@ -7,6 +7,7 @@ import {
 } from "../spotify";
 import { StyledHeader } from "../styles";
 import styled from "styled-components/macro";
+import { SectionWrapper, ArtistsGrid } from "../components";
 
 const ProfileImg = styled.img`
   width: clamp(150px, 30vw, 225px);
@@ -67,6 +68,17 @@ const Profile = () => {
               </div>
             </div>
           </StyledHeader>
+
+          {topArtists && (
+            <main>
+              <SectionWrapper
+                title="Top artists this month"
+                seeAllLink="/top-artists"
+              >
+                <ArtistsGrid artists={topArtists.items.slice(0, 10)} />
+              </SectionWrapper>
+            </main>
+          )}
         </>
       )}
     </>
