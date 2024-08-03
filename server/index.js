@@ -14,10 +14,6 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.get("/test", (req, res) => {
-  res.send("Hello testing");
-});
-
 /**
  * Generates a random string containing number and letters
  * @param {number} length The length of the string
