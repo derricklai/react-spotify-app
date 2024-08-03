@@ -14,6 +14,10 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.get("/test", (req, res) => {
+  res.send("Hello testing");
+});
+
 /**
  * Generates a random string containing number and letters
  * @param {number} length The length of the string
@@ -35,6 +39,7 @@ const generateRandomString = (length) => {
 const stateKey = "spotify_auth_state";
 
 app.get("/login", (req, res) => {
+  console.log("Login route hit");
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
 
