@@ -1,30 +1,43 @@
 import { useState, useEffect } from "react";
 import { catchErrors } from "../utils";
-import { getCurrentUserProfile } from "../spotify";
+import {
+  getCurrentUserProfile,
+  getCurrentUserPlaylists,
+  getTopArtists,
+} from "../spotify";
 import { StyledHeader } from "../styles";
 import styled from "styled-components/macro";
 
 const ProfileImg = styled.img`
-  width: 225px;
-  height: 225px;
+  width: clamp(150px, 30vw, 225px);
+  height: clamp(150px, 30vw, 225px);
   object-fit: cover;
   object-position: center;
-  border-radius: 50%; /* Optional: Makes the image circular */
-  margin-right: 20px; /* Adds space between the image and the text */
+  border-radius: 50%;
+  margin-right: 20px;
 `;
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [playlists, setPlaylists] = useState(null);
+  const [topArtists, setTopArtists] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await getCurrentUserProfile();
-      setProfile(data);
-      console.log(data);
+      const userProfile = await getCurrentUserProfile();
+      setProfile(userProfile.data);
+
+      const userPlaylists = await getCurrentUserPlaylists();
+      setPlaylists(userPlaylists.data);
+
+      const userTopArtist = await getTopArtists();
+      setTopArtists(userTopArtist.data);
     };
 
     catchErrors(fetchData());
   }, []);
+
+  console.log(topArtists);
 
   return (
     <>
@@ -32,19 +45,20 @@ const Profile = () => {
         <>
           <StyledHeader type="user">
             <div className="header__inner">
-              {profile.images.length && profile.images[1].url && (
+              {profile.images.length && profile.images[0].url && (
                 <ProfileImg src={profile.images[0].url} alt="Avatar" />
-                // <img
-                //   className="header__img"
-                //   src={profile.images[1].url}
-                //   alt="Avatar"
-                //   height="150"
-                // />
+                // <img className="header__img" src={profile.images[0].url} alt="Avatar"/>
               )}
               <div>
                 <div className="header__overline">Profile</div>
                 <h1 className="header__name">{profile.display_name}</h1>
                 <p className="header__meta">
+                  {playlists && (
+                    <span>
+                      {playlists.total} Playlist
+                      {playlists.total !== 1 ? "s" : ""}
+                    </span>
+                  )}
                   <span>
                     {profile.followers.total} Follower
                     {profile.followers.total !== 1 ? "s" : ""}
