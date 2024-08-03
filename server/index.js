@@ -40,25 +40,25 @@ const stateKey = "spotify_auth_state";
 
 app.get("/login", (req, res) => {
   console.log("Login route hit");
-  const state = generateRandomString(16);
-  res.cookie(stateKey, state);
-
-  const scope = ["user-read-private", "user-read-email", "user-top-read"].join(
-    " "
-  );
-
   console.log("CLIENT_ID:", CLIENT_ID);
   console.log("REDIRECT_URI:", REDIRECT_URI);
+  res.send("Login");
+  // const state = generateRandomString(16);
+  // res.cookie(stateKey, state);
 
-  const queryParams = querystring.stringify({
-    client_id: CLIENT_ID,
-    response_type: "code",
-    redirect_uri: REDIRECT_URI,
-    state: state,
-    scope: scope,
-  });
+  // const scope = ["user-read-private", "user-read-email", "user-top-read"].join(
+  //   " "
+  // );
 
-  res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
+  // const queryParams = querystring.stringify({
+  //   client_id: CLIENT_ID,
+  //   response_type: "code",
+  //   redirect_uri: REDIRECT_URI,
+  //   state: state,
+  //   scope: scope,
+  // });
+
+  // res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 });
 
 app.get("/callback", (req, res) => {
