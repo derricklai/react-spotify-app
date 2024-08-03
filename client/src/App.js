@@ -1,10 +1,27 @@
 import { useState, useEffect } from "react";
-import { accessToken, getCurrentUserProfile } from "./spotify";
+import { accessToken, getCurrentUserProfile, logout } from "./spotify";
 import { catchErrors } from "./utils";
 import { GlobalStyle } from "./styles";
 import { Login, Profile } from "./pages";
 
 import { Routes, Route, ScrollRestoration } from "react-router-dom";
+
+import styled from "styled-components/macro";
+const StyledLogoutButton = styled.button`
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--white);
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  border-radius: var(--border-radius-pill);
+  z-index: 10;
+  @media (min-width: 768px) {
+    right: var(--spacing-lg);
+  }
+`;
 
 function App() {
   const [token, setToken] = useState(null);
@@ -33,9 +50,12 @@ function App() {
         {!token ? (
           <Login />
         ) : (
-          <Routes>
-            <Route path="/" element={<Profile />}></Route>
-          </Routes>
+          <>
+            <StyledLogoutButton onClick={logout}>Log Out</StyledLogoutButton>
+            <Routes>
+              <Route path="/" element={<Profile />} />
+            </Routes>
+          </>
         )}
       </header>
     </div>
