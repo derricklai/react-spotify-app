@@ -39,26 +39,20 @@ const generateRandomString = (length) => {
 const stateKey = "spotify_auth_state";
 
 app.get("/login", (req, res) => {
-  console.log("Login route hit");
-  console.log("CLIENT_ID:", CLIENT_ID);
-  console.log("REDIRECT_URI:", REDIRECT_URI);
-  res.send("Login");
-  // const state = generateRandomString(16);
-  // res.cookie(stateKey, state);
+  const state = generateRandomString(16);
+  res.cookie(stateKey, state);
 
-  // const scope = ["user-read-private", "user-read-email", "user-top-read"].join(
-  //   " "
-  // );
+  const scope = "user-read-private user-read-email";
 
-  // const queryParams = querystring.stringify({
-  //   client_id: CLIENT_ID,
-  //   response_type: "code",
-  //   redirect_uri: REDIRECT_URI,
-  //   state: state,
-  //   scope: scope,
-  // });
+  const queryParams = querystring.stringify({
+    client_id: CLIENT_ID,
+    response_type: "code",
+    redirect_uri: REDIRECT_URI,
+    state: state,
+    scope: scope,
+  });
 
-  // res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
+  res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 });
 
 app.get("/callback", (req, res) => {
@@ -81,19 +75,22 @@ app.get("/callback", (req, res) => {
   })
     .then((response) => {
       if (response.status === 200) {
-        // redirect to our react app
-        // pass long access token & refresh token in query
+        const { access_token, token_type } = response.data;
 
-        const { access_token, refresh_token, expires_in } = response.data;
-
-        const queryParams = querystring.stringify({
-          access_token,
-          refresh_token,
-          expires_in,
-        });
-        res.redirect(`${FRONTEND_URI}/?${queryParams}`);
+        axios
+          .get("https://api.spotify.com/v1/me", {
+            headers: {
+              Authorization: `${token_type} ${access_token}`,
+            },
+          })
+          .then((response) => {
+            res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+          })
+          .catch((error) => {
+            res.send(error);
+          });
       } else {
-        res.redirect(`/?${querystring.stringify({ error: "invalid_token" })}`);
+        res.send(response);
       }
     })
     .catch((error) => {
