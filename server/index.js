@@ -47,6 +47,9 @@ app.get("/login", (req, res) => {
     " "
   );
 
+  console.log("CLIENT_ID:", CLIENT_ID);
+  console.log("REDIRECT_URI:", REDIRECT_URI);
+
   const queryParams = querystring.stringify({
     client_id: CLIENT_ID,
     response_type: "code",
