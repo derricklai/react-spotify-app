@@ -10,10 +10,9 @@ import {
   Playlists,
   Playlist,
 } from "./pages";
-
-import { Routes, Route, ScrollRestoration } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 import styled from "styled-components/macro";
+
 const StyledLogoutButton = styled.button`
   position: absolute;
   top: var(--spacing-sm);
@@ -35,19 +34,26 @@ function App() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
+    if (!accessToken) {
+      console.error("No access token available");
+      return;
+    }
+
+    console.log("Access Token:", accessToken);
     setToken(accessToken);
 
     const fetchData = async () => {
-      const { data } = await getCurrentUserProfile();
-
-      console.log(profile); // delete this later
-      console.log(token); // delete this later
-
-      setProfile(data);
+      try {
+        console.log("Fetching user profile...");
+        const { data } = await getCurrentUserProfile();
+        console.log("User profile data:", data);
+        setProfile(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error.response || error);
+      }
     };
 
-    catchErrors(fetchData());
-    // eslint-disable-next-line
+    fetchData();
   }, []);
 
   return (
@@ -63,7 +69,6 @@ function App() {
               <Route path="/" element={<Profile />} />
               <Route path="/top-artists" element={<TopArtists />} />
               <Route path="/top-tracks" element={<TopTracks />} />
-
               <Route path="/playlists/:id" element={<Playlist />} />
               <Route path="/playlists/" element={<Playlists />} />
             </Routes>

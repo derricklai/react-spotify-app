@@ -22,8 +22,14 @@ const LOCALSTORAGE_VALUES = {
  * @returns {string} A Spotify access token
  */
 const getAccessToken = () => {
+  console.log("Running getAccessToken");
+  // Check if we're in the process of logging out
+  if (window.location.href.includes("logout=true")) {
+    return null;
+  }
+
   const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString); //
+  const urlParams = new URLSearchParams(queryString);
   const queryParams = {
     [LOCALSTORAGE_KEYS.accessToken]: urlParams.get("access_token"),
     [LOCALSTORAGE_KEYS.refreshToken]: urlParams.get("refresh_token"),
@@ -31,12 +37,16 @@ const getAccessToken = () => {
   };
   const hasError = urlParams.get("error");
 
+  console.log("Query Params:", queryParams);
+  console.log("LocalStorage Values:", LOCALSTORAGE_VALUES);
+
   // If there's an error OR the token in localStorage has expired, refresh the token
   if (
     hasError ||
     hasTokenExpired() ||
     LOCALSTORAGE_VALUES.accessToken === "undefined"
   ) {
+    console.log("Token has expired or error occurred. Refreshing token...");
     refreshToken();
   }
 
@@ -45,6 +55,7 @@ const getAccessToken = () => {
     LOCALSTORAGE_VALUES.accessToken &&
     LOCALSTORAGE_VALUES.accessToken !== "undefined"
   ) {
+    console.log("Using access token from localStorage");
     return LOCALSTORAGE_VALUES.accessToken;
   }
 
@@ -57,10 +68,12 @@ const getAccessToken = () => {
     // Set timestamp
     window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
     // Return access token from query params
+    console.log("Using access token from URL query params");
     return queryParams[LOCALSTORAGE_KEYS.accessToken];
   }
 
   // We should never get here!
+  console.error("No access token found");
   return false;
 };
 
@@ -120,11 +133,30 @@ const refreshToken = async () => {
  */
 export const logout = () => {
   // Clear all localStorage items
-  for (const property in LOCALSTORAGE_KEYS) {
-    window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
-  }
-  // Navigate to homepage
-  window.location = window.location.origin;
+  window.localStorage.clear();
+
+  // Clear all sessionStorage items
+  window.sessionStorage.clear();
+
+  // Clear all cookies
+  document.cookie.split(";").forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+
+  // Reset Axios default headers
+  axios.defaults.headers["Authorization"] = null;
+
+  // Clear any in-memory variables (if applicable)
+  // For example, if you have any global variables storing user data:
+  // window.userProfile = null;
+
+  // Force a hard reload of the page to clear any cached data
+  window.location.href = window.location.origin;
+
+  // Navigate to homepage with a logout parameter
+  window.location.href = window.location.origin + "?logout=true";
 };
 
 export const accessToken = getAccessToken();
