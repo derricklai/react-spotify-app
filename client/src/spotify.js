@@ -148,14 +148,7 @@ export const logout = () => {
   // Reset Axios default headers
   axios.defaults.headers["Authorization"] = null;
 
-  // Clear any in-memory variables (if applicable)
-  // For example, if you have any global variables storing user data:
-  // window.userProfile = null;
-
   // Force a hard reload of the page to clear any cached data
-  window.location.href = window.location.origin;
-
-  // Navigate to homepage with a logout parameter
   window.location.href = window.location.origin + "?logout=true";
 };
 

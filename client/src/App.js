@@ -56,6 +56,12 @@ function App() {
     fetchData();
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    setToken(null);
+    setProfile(null);
+  };
+
   return (
     <div className="App">
       <GlobalStyle />
@@ -64,7 +70,9 @@ function App() {
           <Login />
         ) : (
           <>
-            <StyledLogoutButton onClick={logout}>Log Out</StyledLogoutButton>
+            <StyledLogoutButton onClick={handleLogout}>
+              Log Out
+            </StyledLogoutButton>
             <Routes>
               <Route path="/" element={<Profile />} />
               <Route path="/top-artists" element={<TopArtists />} />
