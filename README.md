@@ -1,9 +1,10 @@
 # react-spotify-app
+A web app for visualizing personalized Spotify data
 
-# Commands
+Built with:
 
-npm init -y
-touch .nvmrc
-.
-
-npm install express --save
+- Spotify Web API
+- Create React App
+- NodeJS + Express
+- React Router
+- Styled Components
